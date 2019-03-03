@@ -1,7 +1,10 @@
 # OSCVideoStreamExample
+
 A simple example of how to stream live video over HTTP from a camera implementing the OSC 2.0 API (like the Ricoh Theta V). OSC is Google's [Open Spherical Camera](https://developers.google.com/streetview/open-spherical-camera/) API.
 
-The main interest here (for me) is *wireless* streaming from the Theta V. The OSC API implements streaming using the [Motion JPEG](https://en.wikipedia.org/wiki/Motion_JPEG) video format.
+The main interest here (for me) is *wireless* streaming from the Theta V. The OSC API implements streaming using the [Motion JPEG](https://en.wikipedia.org/wiki/Motion_JPEG) video format.  
+
+Currently streaming uses the livePreview format, which is quite limited as to framerate. See here: https://developers.theta360.com/en/docs/v2.1/api_reference/options/preview_format.html
 
 This is python 3, using the flask web server. 
 
@@ -18,3 +21,4 @@ The blue light will flash several times as it is booting, when boot is complete 
     <img src="/video_feed">
 ````
 
+Once connected, you can navigate to http://0.0.0.0:5000/public/index.html to see some options for browsing camera state and viewing the stream.
