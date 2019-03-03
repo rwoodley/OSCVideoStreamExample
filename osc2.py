@@ -36,6 +36,58 @@ class Osc2:
         url = url_base + osc_request
         return url
 
+    def info(self):
+        url = self.get_url("info")
+        try:
+            req = requests.get(url)
+        except Exception as e:
+            print("HTTP Error: {}".format(repr(e)))
+            return None
+
+        if req.status_code == 200:
+            response = req.json()
+        else:
+            osc_error(req)
+            response = None
+        return response
+
+    def state(self):
+        return self.do_post("state")["state"]
+
+    def get_option(self, option_name):
+        body = json.dumps({"name": "camera.getOptions",
+                           "parameters": {
+                               "optionNames": [
+                                   option_name]
+                           }
+                           })
+        response = self.do_post("commands/execute", data=body)
+        if response is not None:
+            value = response["results"]["options"][option_name]
+        else:
+            value = None
+        return value
+
+    def do_post(self, command, data=None):
+        url = self.get_url(command)
+        try:
+            print('=========')
+            print(data)
+            req = requests.post(url, data=data, headers={'Content-Type': 'application/json'})
+
+        except Exception as e:
+            print("HTTP Error: {}".format(repr(e)))
+            return None
+
+        if req.status_code == 200:
+            response = req.json()
+            print('-----------')
+            print(response)
+            # state = response[command]
+            return response
+        else:
+            osc_error(req)
+            return None
 
 def osc_error(request):
     status = request.status_code

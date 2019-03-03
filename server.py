@@ -1,8 +1,12 @@
-from flask import Flask, render_template, Response, send_from_directory
+from flask import Flask, render_template, Response, send_from_directory, jsonify, make_response
+from json import dumps
 from osc2 import Osc2
+
 import logging
 # see line 398 of connectionpool.py:
 logging.basicConfig(level=logging.DEBUG)
+
+thetav = None
 
 app = Flask(__name__, static_url_path='/public', static_folder='static')
 
@@ -39,11 +43,28 @@ def gen(thetav):
 
 @app.route('/video_feed')
 def video_feed():
-    thetav = Osc2()
     thetav.get_live_preview()
     return Response(gen(thetav),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route('/state')
+def state():
+    return pretty_json(thetav.state())
+
+@app.route('/info')
+def info():
+    return pretty_json(thetav.info())
+
+@app.route('/getOption/<option_string>')
+def get_option(option_string):
+    return pretty_json(thetav.get_option(option_string))
+
+def pretty_json(json):
+    response = make_response(dumps(json, indent=4, sort_keys=True))
+    response.headers['Content-Type'] = 'application/json;'
+    response.headers['mimetype'] = 'application/json'
+    return response
 
 if __name__ == '__main__':
+    thetav = Osc2()
     app.run(host='0.0.0.0', threaded=True)
