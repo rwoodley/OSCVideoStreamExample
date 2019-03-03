@@ -11,4 +11,5 @@ Steps:
 2. Unplug the theta. The wireless icon will start to flash on the theta.
 3. Connect to the theta's network. Once connected the wireless icon will stop flashing and will remain on.
 4. Then you can run this app to start streaming:
-  python3 app.py
+
+    python3 app.py
