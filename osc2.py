@@ -3,7 +3,7 @@ import requests
 
 
 class Osc2:
-    # Use Version 2 of OpenSphericalCamera API to get a live video stream.
+    # Uses Version 2 of OpenSphericalCamera API to get a live video stream.
     # https://developers.google.com/streetview/open-spherical-camera/
 
     def __init__(self, ip_base="192.168.1.1", http_port=80):

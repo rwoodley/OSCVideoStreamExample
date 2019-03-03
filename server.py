@@ -1,16 +1,10 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, send_from_directory
 from osc2 import Osc2
 import logging
 # see line 398 of connectionpool.py:
 logging.basicConfig(level=logging.DEBUG)
 
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    # Video streaming home page.
-    return render_template('index.html')
-
+app = Flask(__name__, static_url_path='/public', static_folder='static')
 
 def gen(thetav):
     bytes = ''
