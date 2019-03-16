@@ -14,7 +14,8 @@ The blue light will flash several times as it is booting, when boot is complete 
 2. Connect your laptop to the theta's network wirelessly. Once connected the wireless icon will stop flashing and will remain on.
 3. Then you can run this app to start streaming:
 ````
-    python3 app.py
+    workon cv           # or whatever command invokes your environment.
+    python3 server.py
 ````
 4. You can embed the video feed in a web page like this:
 ````
