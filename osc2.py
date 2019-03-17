@@ -5,9 +5,9 @@ class Osc2:
     # Uses Version 2 of OpenSphericalCamera API to get a live video stream.
     # https://developers.google.com/streetview/open-spherical-camera/
 
-    def __init__(self, mode="local", host=None, port=None, id=None, password=None):
+    def __init__(self, mode="local", host=None, port=None, theta_id=None, password=None):
         self.response = None
-        self.requests_wrapper = RequestsWrapper(mode, host, port, id, password)
+        self.requests_wrapper = RequestsWrapper(mode, host, port, theta_id, password)
         self.ip = host
         self.port = port
 
@@ -58,6 +58,21 @@ class Osc2:
         response = self.do_post("commands/execute", data=body)
         if response is not None:
             value = response["results"]["options"][option_name]
+        else:
+            value = None
+        return value
+
+    def set_option(self, option_name, option_value):
+        body = json.dumps({"name": "camera.setOptions",
+                           "parameters": {
+                               "options": {
+                                   option_name: option_value
+                               }
+                           }
+                           })
+        response = self.do_post("commands/execute", data=body)
+        if response is not None:
+            value = response["state"]
         else:
             value = None
         return value

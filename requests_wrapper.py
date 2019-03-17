@@ -3,9 +3,9 @@ from requests.auth import HTTPDigestAuth
 
 
 class RequestsWrapper:
-    def __init__(self, mode, ip_base, http_port, id, password):
+    def __init__(self, mode, ip_base, http_port, theta_id, password):
         self.mode = mode
-        self.theta_id = id
+        self.theta_id = theta_id
         self.theta_password = password
         self.ip = ip_base
         self.port = http_port

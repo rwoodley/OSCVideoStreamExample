@@ -34,6 +34,16 @@ def get_option(option_string):
     return pretty_json(thetav.get_option(option_string))
 
 
+@app.route('/setOption/<option_string>/<option_value>')
+def set_option(option_string, option_value):
+    if option_string == "previewFormat":
+        if option_value == "320x640":
+            option_value = {"width": 640, "height": 320, "framerate": 8}
+        elif option_value == "512x1024":
+            option_value = {"width": 1024, "height": 512, "framerate": 30}
+    return pretty_json(thetav.set_option(option_string, option_value))
+
+
 def pretty_json(json):
     response = make_response(dumps(json, indent=4, sort_keys=True))
     response.headers['Content-Type'] = 'application/json;'
@@ -60,7 +70,7 @@ if __name__ == '__main__':
         mode="router"
         host = args.host
         port = args.port
-        id = args.id
+        theta_id = args.id
         password = args.password
     else:
         print("Connecting via local theta network.")
@@ -70,13 +80,13 @@ if __name__ == '__main__':
         mode="local"
         host = "192.168.1.1"
         port = 80
-        id = None
+        theta_id = None
         password = None
 
     print("host: {}".format(host))
     print("port: {}".format(port))
-    print("id: {}".format(id))
+    print("id: {}".format(theta_id))
     print("pwd: {}".format(password))
 
-    thetav = Osc2(mode=mode, host=host, port=port, id=id, password=password)
+    thetav = Osc2(mode=mode, host=host, port=port, theta_id=theta_id, password=password)
     app.run(host='0.0.0.0', threaded=True)
