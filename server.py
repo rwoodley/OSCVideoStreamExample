@@ -1,8 +1,9 @@
-from flask import Flask, render_template, Response, send_from_directory, jsonify, make_response
+from flask import Flask, Response, make_response
 from json import dumps
 from osc2 import Osc2
-
+from video_stream_handler import stream_handler
 import logging
+
 # see line 398 of connectionpool.py:
 logging.basicConfig(level=logging.DEBUG)
 
@@ -10,54 +11,28 @@ thetav = None
 
 app = Flask(__name__, static_url_path='/public', static_folder='static')
 
-def gen(thetav):
-    bytes = ''
-    a = -1
-    # Video streaming generator function.
-    # Handles MJPEG stream.
-    for block in thetav.response.iter_content(16384):
-        print("Read Block ")
-        if bytes == '':
-            bytes = block
-        else:
-            bytes += block
-
-        # Search the current block of bytes for the jpq start and end
-        if a == -1:
-            a = bytes.find(b'\xff\xd8')
-        b = bytes.find(b'\xff\xd9')
-
-        if a != - 1 and b != -1:
-            print("Writing frame %04d - Byte range : %d to %d" % (0, a, b))
-            # Found a jpg, write to disk
-            frame = bytes[a:b + 2]
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-            # Reset the buffer to point to the next set of bytes
-            bytes = bytes[b + 2:]
-            print("Wrote frame.")
-            a = -1
-
-
 
 @app.route('/video_feed')
 def video_feed():
     thetav.get_live_preview()
-    return Response(gen(thetav),
+    return Response(stream_handler(thetav),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 @app.route('/state')
 def state():
     return pretty_json(thetav.state())
 
+
 @app.route('/info')
 def info():
     return pretty_json(thetav.info())
 
+
 @app.route('/getOption/<option_string>')
 def get_option(option_string):
     return pretty_json(thetav.get_option(option_string))
+
 
 def pretty_json(json):
     response = make_response(dumps(json, indent=4, sort_keys=True))
@@ -65,6 +40,43 @@ def pretty_json(json):
     response.headers['mimetype'] = 'application/json'
     return response
 
+
 if __name__ == '__main__':
-    thetav = Osc2()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-r", "--router", help="connect via wireless router",
+                        action="store_true")
+    parser.add_argument("-o", "--host", action="store", dest="host",
+                        help="Host name or ip of camera.")
+    parser.add_argument("-p", "--port", action="store", dest="port",
+                        help="port of camera.")
+    parser.add_argument("-i", "--id", action="store", dest="id",
+                        help="id of camera, eg: THETAYL00103139.")
+    parser.add_argument("--pwd", action="store", dest="password",
+                        help="password of camera, eg: 00103139")
+    args = parser.parse_args()
+    if args.router:
+        print("Connecting via router/ip.")
+        mode="router"
+        host = args.host
+        port = args.port
+        id = args.id
+        password = args.password
+    else:
+        print("Connecting via local theta network.")
+        if args.host is not None or args.port is not None or args.id is not None or args.password is not None:
+            print("To run in local mode, do not specify any arguments.")
+            exit(1)
+        mode="local"
+        host = "192.168.1.1"
+        port = 80
+        id = None
+        password = None
+
+    print("host: {}".format(host))
+    print("port: {}".format(port))
+    print("id: {}".format(id))
+    print("pwd: {}".format(password))
+
+    thetav = Osc2(mode=mode, host=host, port=port, id=id, password=password)
     app.run(host='0.0.0.0', threaded=True)
