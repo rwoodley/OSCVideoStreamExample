@@ -9,8 +9,8 @@ Currently streaming uses the livePreview format, which is quite limited as to fr
 This is python 3, using the flask web server. 
 
 #### Python packages required:
-flask
-requests
+* flask
+* requests
 
 #### Connecting
 
