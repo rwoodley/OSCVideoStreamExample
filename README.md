@@ -11,6 +11,7 @@ This is python 3, using the flask web server.
 #### Python packages required:
 * flask
 * requests
+* opencv (optional - only needed if you select the opencv stream).
 
 #### Connecting
 
@@ -28,6 +29,8 @@ You will need the wireless plug-in to do this.
 See instructions here: https://gist.github.com/rwoodley/3715efa2d0ce8ed813b349f4f3745a1e
 
 If you are in Mode 1, the wireless icon on the Theta will be blue. In Mode 2, it will be green.
+
+You can also connect to the Theta with a USB cable. Lets call that Mode 3.
 
 
 #### To Run:
@@ -70,4 +73,10 @@ MUST specify all of the following options:
 Example:
 
     python3 server.py -r -o 192.168.0.101 -p 80 --id THETAYL00103139 --pwd 00103139
+    
+##### Mode 3: You are connecting to the theta with a USB cable
+
+In this case just run the app without any arguments, as in Mode 1. The only thing that works is the OpenCV stream, e.g.:
+
+    http://localhost:5000/opencv_stream
     

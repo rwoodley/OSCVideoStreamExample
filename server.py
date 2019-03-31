@@ -2,6 +2,7 @@ from flask import Flask, Response, make_response
 from json import dumps
 from osc2 import Osc2
 from video_stream_handler import stream_handler
+from live_preview_handler import live_preview_handler
 import logging
 
 # see line 398 of connectionpool.py:
@@ -12,12 +13,16 @@ thetav = None
 app = Flask(__name__, static_url_path='/public', static_folder='static')
 
 
-@app.route('/video_feed')
+@app.route('/opencv_stream')
 def video_feed():
-    thetav.get_live_preview()
-    return Response(stream_handler(thetav),
+    return Response(stream_handler(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route('/raw_live_preview')
+def live_preview():
+    thetav.get_live_preview()
+    return Response(live_preview_handler(thetav),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/state')
 def state():
@@ -41,6 +46,8 @@ def set_option(option_string, option_value):
             option_value = {"width": 640, "height": 320, "framerate": 8}
         elif option_value == "512x1024":
             option_value = {"width": 1024, "height": 512, "framerate": 30}
+        elif option_value == "1920x1080":
+            option_value = {"width": 1920, "height": 1080, "framerate": 8}
     return pretty_json(thetav.set_option(option_string, option_value))
 
 
