@@ -28,10 +28,9 @@ Mode 2. By having the theta connect to your wireless router.
 You will need the wireless plug-in to do this. 
 See instructions here: https://gist.github.com/rwoodley/3715efa2d0ce8ed813b349f4f3745a1e
 
-If you are in Mode 1, the wireless icon on the Theta will be blue. In Mode 2, it will be green.
+Mode 3. You can also connect to the Theta with a USB cable.
 
-You can also connect to the Theta with a USB cable. Lets call that Mode 3.
-
+If you are in Mode 1, the wireless icon on the Theta will be blue. In Mode 2, it will be green. 
 
 #### To Run:
 
@@ -47,7 +46,7 @@ The video feed is embedded in the web page via this tag:
 
 
 So, what are the `<options>` mentioned above? It all depends on which of
-the 2 possible ways you're connecting to the theta:
+the 3 possible ways you're connecting to the theta:
 
 ##### Mode 1: You are connecting to Theta's own network
 
